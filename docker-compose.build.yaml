@@ -1,0 +1,21 @@
+# Override for self-hosted VPS: build image from this repo instead of pulling chatwoot/chatwoot:latest
+# Usage: docker compose -f docker-compose.production.yaml -f docker-compose.build.yaml up -d --build
+
+version: '3'
+
+services:
+  base: &base
+    image: chatwoot:production
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+      args:
+        RAILS_ENV: production
+        BUNDLE_WITHOUT: development:test
+        RAILS_SERVE_STATIC_FILES: "true"
+
+  rails:
+    <<: *base
+
+  sidekiq:
+    <<: *base
